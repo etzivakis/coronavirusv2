@@ -1,0 +1,32 @@
+#Evelyn Tzivakis R coding project 30/3/2020
+#Plotting coronavirus cases worldwide using data from John Hopkins University 
+
+#install packages needed for project 
+#(note to Dani: I was having major issues installing tidyverse for this project on my PC; R studio was telling me it had installed the packages but nothing was happening
+#- so I just installed the three packages that the project owner suggested were needed)
+
+install.packages("readr")
+install.packages("ggplot2")
+install.packages("dplyr")
+
+#create an overview table of the number of confirmed cases, arranged in date order and filtering for cases of 10 or more 
+#(i.e. from January, show dates where >10 new cases were confirmed and in what country)
+overview_cases <- coronavirus %>% 
+  rename (new_cases = cases) %>%
+  filter(new_cases > 10) %>%
+  arrange((date)) %>%
+#from original 'coronavirus' file, only want to include variables Country.Region, new_cases, and date 
+  select(Country.Region, new_cases, date)
+
+#read 'coronavirus_dataset' file into 'confirmed_cases_worldwide'
+confirmed_cases_worldwide <- read.csv("coronavirus_dataset.csv")
+
+#plot picture of confirmed coronavirus cases over the entire time period for which we have data for 
+picture <- ggplot(data=coronavirus)+
+#line graph - x axis = date, y axis = cases, change colour gradient of lines to reflect number of cases on a particular date
+  geom_line(mapping=aes(x=date, y=cases, colour=cases))+
+#change y axis label to 'cumulative confirmed cases worldwide'
+  ylab("cumulative confirmed cases worldwide")+
+#change x axis date scale to reflect cumulative number of confirmed cases every week 
+  scale_x_date(date_breaks = "7 day")
+plot(picture)
